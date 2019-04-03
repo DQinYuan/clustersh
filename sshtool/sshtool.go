@@ -47,7 +47,6 @@ type Sshtool struct {
 
 
 func NewSshtool(ip string, username string, passward string, timeout string) (*Sshtool, error) {
-
 	dura, err := time.ParseDuration(timeout)
 	if err != nil {
 		log.Printf("Warning: %s is not legal time format, use default value '15s'  \n", timeout)
@@ -112,6 +111,10 @@ func (p *Sshtool) Exec(cmd string, verbose bool) error  {
 	}
 
 	return nil
+}
+
+func (p *Sshtool) Sh(shFilePath string, verbose bool) error  {
+	return p.Exec(fmt.Sprintf("sh %s", shFilePath), verbose)
 }
 
 func (p *Sshtool) Mkdir(path string, verbose bool) error  {

@@ -12,6 +12,8 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
+	"sync/atomic"
 )
 
 var ch = make(chan string, runtime.NumCPU())
@@ -29,7 +31,7 @@ func readNodes(ipsPath string) {
 		log.Fatalf("%s file can not open\n", ipsPath)
 	}
 
-	ips := strings.Split(string(data), "\n")
+	ips := strings.Split(strings.TrimSpace(string(data)), "\n")
 
 	for i, v := range ips {
 		trimed := strings.TrimSpace(v)
@@ -102,33 +104,64 @@ func init() {
 	}
 }
 
+// transfer all file to remote dir
+func tranAllFiles(sshTool *sshtool.Sshtool, remoteDir string, verbose bool){
+	for filePath, cFile := range fileContent{
+		err := sshTool.Copy(bytes.NewReader(cFile.content),
+			filepath.Join(remoteDir, filePath), "0655", cFile.size, verbose)
+		if err != nil{
+			log.Printf("Warning: copy file error %v", err)
+		}
+	}
+}
 
+func chooseFile(shName string, osType string) string {
+	fileLongName := fmt.Sprintf("%s_%s.sh", shName, osType)
+	if _, ok := fileContent[fileLongName]; ok{
+		return fileLongName
+	}
 
+	return fmt.Sprintf("%s.sh", shName)
+}
 
+func execSh(remoteDir string, shName string, username string, password string, timeout string, verbose bool, wg *sync.WaitGroup) {
 
-func shName(remoteDir string, shName string, username string, password string, timeout string, verbose bool) {
+	defer wg.Done()
 
 	for ip := range ch{
 		//create ssh connection
  		sshTool, err := sshtool.NewSshtool(ip, username, password, timeout)
 		if err != nil{
-			log.Printf("Warning: ip %s can not connect\n", ip)
+			log.Printf("Warning: ip %s can not connect, err: %v\n", ip, err)
 			continue
 		}
 
 		//judge os type
 		ostype, err := sshTool.OsType(verbose)
 		if err != nil{
-			log.Printf("Warning: ip %s os query error\n", ip)
+			log.Printf("Warning: ip %s os query error, err: %v\n", ip, err)
 			continue
 		}
 
 		//send files in current directory and subdirectory
-		for filePath, cFile := range fileContent{
-			sshTool.Copy(bytes.NewReader(cFile.content),
-				filepath.Join(remoteDir, filePath), "0655", cFile.size, verbose)
-		}
+		tranAllFiles(sshTool, remoteDir, verbose)
 
 		//exec sh for spec os type
+		execShFile := filepath.Join(remoteDir, chooseFile(shName, ostype))
+		err = sshTool.Sh(execShFile, verbose)
+		if err != nil{
+			log.Printf("Warning: sh %s exec fail, %v", execShFile, err)
+			continue
+		}
+
+		log.Printf("ip %s , sh %s ok", ip, execShFile)
+		count()
 	}
+}
+
+
+var counter int32
+
+func count() {
+	atomic.AddInt32(&counter,1)
 }
