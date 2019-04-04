@@ -19,6 +19,8 @@ func generateIp(ipFormat string, start int, end int) []string {
 
 
 func TestReadNodes(t *testing.T) {
+	t.SkipNow()
+
 	correctData := make([]string, 0)
 	correctData = append(correctData, "10.10.108.85")
 	correctData = append(correctData, generateIp(`10.10.108.%d`, 91, 93)...)
@@ -61,7 +63,7 @@ func TestChooseFile(t *testing.T) {
 
 func TestExecSh(t *testing.T)  {
 	t.SkipNow()
-	ch <- "10.10.108.85"
+	ch <- "10.10.108.40"
 	close(ch)
 	wg := new(sync.WaitGroup)
 	wg.Add(1)

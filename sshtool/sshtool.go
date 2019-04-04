@@ -121,6 +121,10 @@ func (p *Sshtool) Mkdir(path string, verbose bool) error  {
 	return p.Exec("mkdir -p " + path, verbose)
 }
 
+func (p *Sshtool) RmDir(remoteDir string, verbose bool) error  {
+	return p.Exec("rm -rf " + remoteDir, verbose)
+}
+
 
 func (p *Sshtool) CopyFile(fileReader io.Reader, remotePath string, permissions string, verbose bool) error  {
 	contents_bytes, err := ioutil.ReadAll(fileReader)
@@ -205,6 +209,10 @@ func (p *Sshtool) Copy(r io.Reader, remotePath string, permissions string, size 
 	return nil
 }
 
+
+func (p *Sshtool) Close() error {
+	return p.client.Close()
+}
 
 
 type doubeWriter struct {

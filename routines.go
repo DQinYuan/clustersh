@@ -129,34 +129,42 @@ func execSh(remoteDir string, shName string, username string, password string, t
 	defer wg.Done()
 
 	for ip := range ch{
-		//create ssh connection
- 		sshTool, err := sshtool.NewSshtool(ip, username, password, timeout)
-		if err != nil{
-			log.Printf("Warning: ip %s can not connect, err: %v\n", ip, err)
-			continue
-		}
-
-		//judge os type
-		ostype, err := sshTool.OsType(verbose)
-		if err != nil{
-			log.Printf("Warning: ip %s os query error, err: %v\n", ip, err)
-			continue
-		}
-
-		//send files in current directory and subdirectory
-		tranAllFiles(sshTool, remoteDir, verbose)
-
-		//exec sh for spec os type
-		execShFile := filepath.Join(remoteDir, chooseFile(shName, ostype))
-		err = sshTool.Sh(execShFile, verbose)
-		if err != nil{
-			log.Printf("Warning: sh %s exec fail, %v", execShFile, err)
-			continue
-		}
-
-		log.Printf("ip %s , sh %s ok", ip, execShFile)
-		count()
+		log.Printf("start handling ip %s", ip)
+		handleIp(ip, remoteDir, shName, username, password, timeout, verbose)
 	}
+}
+
+func handleIp(ip string, remoteDir string, shName string, username string, password string, timeout string, verbose bool)  {
+
+	//create ssh connection
+	sshTool, err := sshtool.NewSshtool(ip, username, password, timeout)
+	if err != nil{
+		log.Printf("Warning: ip %s can not connect, err: %v\n", ip, err)
+		return
+	}
+	defer sshTool.Close()
+
+	//judge os type
+	ostype, err := sshTool.OsType(verbose)
+	if err != nil{
+		log.Printf("Warning: ip %s os query error, err: %v\n", ip, err)
+		return
+	}
+
+	//send files in current directory and subdirectory
+	tranAllFiles(sshTool, remoteDir, verbose)
+	defer sshTool.RmDir(remoteDir, verbose)
+
+	//exec sh for spec os type
+	execShFile := filepath.Join(remoteDir, chooseFile(shName, ostype))
+	err = sshTool.Sh(execShFile, verbose)
+	if err != nil{
+		log.Printf("Warning: ip %s sh %s exec fail, %v", ip, execShFile, err)
+		return
+	}
+
+	log.Printf("ip %s , sh %s ok", ip, execShFile)
+	count()
 }
 
 

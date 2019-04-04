@@ -45,6 +45,5 @@ func TestSshtool(t *testing.T) {
 	sshTool.CopyFile(file, "/root/clusershtest/sshtool.go", "0655", true)
 
 	sshTool.Mkdir("~/hahahaha", true)
-
-	sshTool.Sh("hello.sh", true)
+	sshTool.RmDir("~/hahahaha", true)
 }

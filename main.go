@@ -5,6 +5,8 @@ import (
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
 	"log"
+     _ "net/http/pprof"
+	"net/http"
 	"os"
 	"runtime"
 	"sync"
@@ -18,16 +20,16 @@ clustersh example.sh --username=xxx --password=xxx
 there also should be a `nodes` file in the same directory, in which is node ip in clusters
 */
 func main() {
-
 	var username string;
 	var password string;
 	var ipsfilePath string;
 	var timeout string;
 	var verbose bool;
+	var debug bool;
 
 	rootCmd := &cobra.Command{
-		Use: "clustersh example.sh",
-		Short: "'clustersh example.sh', can run your sh in a cluster, without need to install anything in the cluster",
+		Use: "clustersh shname",
+		Short: "'clustersh shname', can run your sh in a cluster, without need to install anything in the cluster",
 		Args:cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			if verbose{
@@ -36,6 +38,19 @@ func main() {
 				log.Printf("ips: %s\n", ipsfilePath)
 				log.Printf("timeout: %s\n", timeout)
 				log.Printf("verbose: %v\n", verbose)
+			}
+
+			if debug{
+				// start pprof for debug
+				go func() {
+					log.Println("starting pprof server...")
+					err := http.ListenAndServe("localhost:10000", nil)
+					if err != nil{
+						log.Printf("pprof start error, %v", err)
+						return
+					}
+					log.Println("pprof start success!!!!!")
+				}()
 			}
 
 			shName := args[0]
@@ -53,6 +68,8 @@ func main() {
 			}
 
 			wg.Wait()
+
+			log.Printf("All ok, success num: %d", counter)
 		},
 	}
 
@@ -62,6 +79,7 @@ func main() {
 	rootCmd.Flags().StringVarP(&ipsfilePath, "ips", "I", "ips", "")
 	rootCmd.Flags().StringVarP(&timeout, "timeout", "T", "10s",  "ssh connect timeout for example:'--timeout 10s'")
 	rootCmd.Flags().BoolVarP(&verbose, "verbose", "V", false, "print all possible info, default false, can be opened with '--verbose'")
+	rootCmd.Flags().BoolVarP(&debug, "debug", "D", false, "start pprof for debug")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(rootCmd.UsageString())
