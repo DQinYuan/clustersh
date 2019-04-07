@@ -44,7 +44,7 @@ Suppose our task is to install
 an nfs client for all machines in the cluster. There are 
 centos machines and ubuntu machines in the cluster.
 
-## Download cluster sh
+### Download cluster sh
 
 Download `clustersh` binary file from
  [the download address](https://github.com/DQinYuan/clustersh/releases/download/v0.1.0/clustersh)
@@ -63,7 +63,7 @@ clustersh --help
 
 Then you can see some help info.
 
-## Prepare a directory
+### Prepare a directory
 
 Assume the prepared directory is `~/clustershtest`:
 
@@ -72,7 +72,7 @@ mkdir ~/clustershtest
 cd ~/clustershtest
 ```
 
-## Config ips file
+### Config ips file
 
 Create a file named ips in the directory:
 
@@ -101,7 +101,7 @@ default config file name is `ips`, but you
 can add `--ips` param when execute `clustersh`
 command to customize config file name.
 
-## Write shell script
+### Write shell script
  
 Write two scripts in the directory, as follows:
 
@@ -127,7 +127,7 @@ all the shell scripts you write
  are tested on the corresponding operating system.
  
 
-## Execute clustersh
+### Execute clustersh
 
 Final, you only need to execute command as follow:
 
@@ -182,7 +182,7 @@ to execute when `clustersh`
 **can not recognize os type** or
 **there is no specific scripts for target os**
 
-## Check output
+### Check output
 
 Although shell scripts pass tests
  on the corresponding operating system, 
@@ -222,7 +222,7 @@ Suppose there are only 4 machines in the cluster,
 
 Steps as follows.
 
-## Create a directory
+### Create a directory
 
 Create a work directory
 
@@ -231,7 +231,7 @@ mkdir unihosts
 cd unihosts
 ```
 
-## Edit ips file
+### Edit ips file
 
 Edit ips file in this directory:
 
@@ -239,7 +239,7 @@ Edit ips file in this directory:
 10.10.108.91-94
 ```
 
-## Edit uniform hosts file
+### Edit uniform hosts file
 
 The uniform hosts file in the cluster, I call it "unihosts":
 
@@ -258,7 +258,7 @@ edit it as follows:
 10.10.108.94 h94
 ```
 
-## Write shell script
+### Write shell script
 
 The main function of the script is to overwrite `/etc/hosts`
 with `unihosts`:
@@ -272,7 +272,7 @@ with `unihosts`:
 The script is common to all operating system,
 so we needn't to provide os specific scrips like last case.
 
-## Execute clustersh
+### Execute clustersh
 
 ```bash
 #!/bin/sh
@@ -283,7 +283,7 @@ so we needn't to provide os specific scrips like last case.
 The task is relatively simple, so execution is very fast 
 even if there are hundreds of machines.
 
-## Summary
+### Summary
 
 This case is to illustrate that you can use any file 
 in the current directory and subdirectories in your shell script, 

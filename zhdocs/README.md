@@ -31,7 +31,7 @@
 假设我们的任务是给集群内所有机器统一安装一个nfs客户端，集群内有centos机器和
 ubuntu机器
 
-## 下载clustersh
+### 下载clustersh
 
 去[下载地址](https://github.com/DQinYuan/clustersh/releases/download/v0.1.0/clustersh)下载clustersh的二进制文件，
 然后将其移动到linux的PATH路径下：
@@ -49,7 +49,7 @@ clustersh --help
 可以看到相关的帮助信息
 
 
-## 准备一个文件夹
+### 准备一个文件夹
 
 之后准备一个文件夹(假设是`~/clustershtest`)：
 
@@ -59,7 +59,7 @@ cd ~/clustershtest
 ```
 
 
-## 配置ips
+### 配置ips
 
 在文件夹下创建一个名叫ips的文件:
 
@@ -84,7 +84,7 @@ touch ips
 默认情况下配置文件名叫做ips，如果你不想让它叫做ips的花，可以在后面
 执行`clustersh`命令是使用`--ips`指定。
 
-## 编写shell脚本
+### 编写shell脚本
 
 在文件夹下写如下两个脚本：
 
@@ -107,7 +107,7 @@ apt install -y nfs-common
 在开始下一步之前，你最好确保你写的
 所有shell脚本在对应操作系统上都测试通过。
 
-## 执行clustersh
+### 执行clustersh
 
 最后在文件夹下执行如下命令即可：
 
@@ -152,7 +152,7 @@ clustersh nfs -U root -P xxxxxx
 
 如果你写的脚本对所有操作系统都通用的话，你直接给一个`简称.sh`即可。
 
-## 查看输出
+### 查看输出
 
 虽然shell脚本在相应的操作系统上都测试通过了，
 但是在集群中某些机器运行时还是有可能因为一些
@@ -183,7 +183,7 @@ clustersh nfs -U root -P xxxxxx
 
 [案例源代码](https://github.com/DQinYuan/clustersh/tree/master/examples/unihosts)
 
-## 新建文件夹
+### 新建文件夹
 
 新建一个专门的工作目录：
 
@@ -192,7 +192,7 @@ mkdir unihosts
 cd unihosts
 ```
 
-## 编辑ips文件
+### 编辑ips文件
 
 在文件夹下编辑`ips`文件，令其内容为：
 
@@ -200,7 +200,7 @@ cd unihosts
 10.10.108.91-94
 ```
 
-## 编写统一的hosts文件
+### 编写统一的hosts文件
 
 集群中统一的hosts文件，我称之为`unihosts`
 
@@ -219,7 +219,7 @@ touch unihosts
 10.10.108.94 h94
 ```
 
-## 编写shell脚本
+### 编写shell脚本
 
 shell脚本的主要功能就是使用`unihosts`覆盖掉
 集群服务器上的`/etc/hosts`文件
@@ -236,7 +236,7 @@ shell脚本的主要功能就是使用`unihosts`覆盖掉
 像之前的案例一样给出针对操作系统的脚本了。
 
 
-## 执行clustersh
+### 执行clustersh
 
 ```bash
 clustersh unihosts -U root -P xxxxxx
@@ -245,7 +245,7 @@ clustersh unihosts -U root -P xxxxxx
 这个任务比较简单，应该很快就能执行完毕。
 
 
-## 总结
+### 总结
 
 这个案例就是想说明你的shell脚本里是可以使用
 当前目录及子目录中的任意文件的，因为当前目录
