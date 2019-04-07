@@ -17,15 +17,11 @@
 
 # 场景
 
-基本上所有的集群管理工具都需要提前在集群每台电脑上安装相应的软件，
-虽然这些工具功能强大且使用方便，
-但是集群规模很大且操作系统类型不一的话，这个安装过程就会很麻烦，
-就好像早上去上班的路上，要先走500m才能到达地铁站
-，`clustersh`主要就是用于解决集群搭建的这"500m"的问题。
-所以`clustersh`尽可能地简单易用。
+如果你想要在许多刚刚装完linux系统的服务器（可能有上百台）
+上统一执行某个shell脚本，那么`clustersh`就非常适合你。
 
-当然，如果你只是希望在指定的集群中批量执行shell脚本，这个工具也很适合你。
-工具支持直接指定一个ip范围，能让配置过程轻松不少。
+“刚刚装完linux操作系统”仅仅是为强调`clustersh`不需要
+安装任何东西，并不是`clustersh`运行的必要条件。
 
 # Get Started
 
@@ -100,7 +96,7 @@ touch ips
 yum install -y  nfs-utils
 ```
 
- - `nfs_ubuntu.sh`,用于在ubuntu上安装nfs-ubuntu
+ - `nfs_ubuntu.sh`,用于在ubuntu上安装nfs-client
  
 ```bash
 #!/bin/sh
@@ -158,9 +154,9 @@ clustersh nfs -U root -P xxxxxx
 
 #### 查看输出
 
-虽然shell脚本在相应的操作系统上都测试通过，
-但是在集群中运行时还是有可能因为一些
-莫名奇妙的原因（比如磁盘空间不足，DNS配置错误等等）
+虽然shell脚本在相应的操作系统上都测试通过了，
+但是在集群中某些机器运行时还是有可能因为一些
+难以预料的原因（比如磁盘空间不足，DNS配置错误等等）
 失败，`clustersh`在运行时会打印每台机器运行的成败情况，
 对于少数失败的机器，最好手动登陆上去完成操作。
 
@@ -253,14 +249,14 @@ clustersh unihosts -U root -P xxxxxx
 
 这个案例就是想说明你的shell脚本里是可以使用
 当前目录及子目录中的任意文件的，因为当前目录
-及子目录的所有文件都会被我发送到集群中去。
+及子目录的所有文件都会被`clustersh`发送到集群中去。
 
-![clustersh summary](https://user-images.githubusercontent.com/23725000/55681918-c8130b80-595e-11e9-8123-bfc554844551.png)
+![clustersh summary](https://user-images.githubusercontent.com/23725000/55685568-8304ce80-598a-11e9-9755-879005bab0a3.png)
 
 
 # 参数介绍
 
-通过`cluster --help`参数即可查看所有的参数及其含义
+通过`clustersh --help`参数即可查看所有的参数及其含义
 
 | 全称        | 简写    |  含义  | 默认值| 
 | --------   | -----   | ---- |---- |
@@ -275,7 +271,9 @@ clustersh unihosts -U root -P xxxxxx
 # 原理
 
 就是在ssh上做的简单封装和抽象，在将工作目录及所有子目录
-都使用ssh发送过去后，远程使用ssh执行相应名称shell脚本
+都使用ssh发送过去后，远程使用ssh执行相应名称shell脚本。
+
+`cluster`会同时和CPU核数数量相当的机器连接。
 
 
 
