@@ -34,7 +34,7 @@ ubuntu机器
 
 #### 下载clustersh
 
-去[下载地址](/DQinYuan/clustersh/releases/download/v0.1.0/clustersh)下载clustersh的二进制文件，
+去[下载地址](https://github.com/DQinYuan/clustersh/releases/download/v0.1.0/clustersh)下载clustersh的二进制文件，
 然后将其移动到linux的PATH路径下：
 
 ```bash
@@ -180,7 +180,7 @@ clustersh nfs -U root -P xxxxxx
 集群中机器的hosts文件，使用`clustersh`可以轻松完成任务。
 
 假设集群中只有四台机器：10.10.108.91,10.10.108.92,10.10.108.93,
-10.10.108.94
+10.10.108.94(为了举例方便，这里就假设只有四台，现实中可能有数百台)
 
 [案例源代码](https://github.com/DQinYuan/clustersh/tree/master/examples/unihosts)
 
