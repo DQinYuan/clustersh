@@ -34,7 +34,7 @@ ubuntu机器
 
 #### 下载clustersh
 
-去[下载地址](https://github.com/DQinYuan/clustersh/releases/download/v0.1.0/clustersh)下载clustersh的二进制文件，
+去[下载地址](/DQinYuan/clustersh/releases/download/v0.1.0/clustersh)下载clustersh的二进制文件，
 然后将其移动到linux的PATH路径下：
 
 ```bash
