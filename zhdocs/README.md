@@ -1,5 +1,8 @@
 # clustersh
 
+[![Join the chat at https://gitter.im/dqinyuan/clustersh](https://badges.gitter.im/dqinyuan/clustersh.svg)](https://gitter.im/dqinyuan/clustersh?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
 # 简介
 
 一个简单的命令行工具，用于指定的集群上执行shell脚本，
@@ -269,7 +272,10 @@ clustersh unihosts -U root -P xxxxxx
 
 
 
+# 原理
 
+就是在ssh上做的简单封装和抽象，在将工作目录及所有子目录
+都使用ssh发送过去后，远程使用ssh执行相应名称shell脚本
 
 
 
