@@ -170,10 +170,105 @@ clustersh nfs -U root -P xxxxxx
 并不会花费太多的精力。
 
 
+[案例源代码](https://github.com/DQinYuan/clustersh/tree/master/examples/nfs)
+
+
+# 另一个简单的案例
+
+假设我懒得在集群中搭建的DNS服务器，我希望他们互相之间
+仅仅通过本地的hosts文件来互相识别主机名，这个时候就需要统一更新
+集群中机器的hosts文件，使用`clustersh`可以轻松完成任务。
+
+假设集群中只有四台机器：10.10.108.91,10.10.108.92,10.10.108.93,
+10.10.108.94
+
 [案例源代码]()
 
+#### 新建文件夹
 
-# 稍复杂的另一个案例
+新建一个专门的工作目录：
+
+```bash
+mkdir unihosts
+cd unihosts
+```
+
+#### 编辑ips文件
+
+在文件夹下编辑`ips`文件，令其内容为：
+
+```bash
+10.10.108.91-94
+```
+
+#### 编写统一的hosts文件
+
+集群中统一的hosts文件，我称之为`unihosts`
+
+```bash
+touch unihosts
+```
+
+编辑其内容为：
+
+```bash
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+10.10.108.91 h91
+10.10.108.92 h92
+10.10.108.93 h93
+10.10.108.94 h94
+```
+
+#### 编写shell脚本
+
+shell脚本的主要功能就是使用`unihosts`覆盖掉
+集群服务器上的`/etc/hosts`文件
+
+编辑`unihosts.sh`如下：
+
+```bash
+#!/bin/sh
+
+\cp -f ./unihosts /etc/hosts
+```
+
+这个脚本对所有操作系统通用，所以我不需要
+像之前的案例一样给出针对操作系统的脚本了。
+
+
+#### 执行clustersh
+
+```bash
+clustersh unihosts -U root -P xxxxxx
+```
+
+这个任务比较简单，应该很快就能执行完毕。
+
+
+#### 总结
+
+这个案例就是想说明你的shell脚本里是可以使用
+当前目录及子目录中的任意文件的，因为当前目录
+及子目录的所有文件都会被我发送到集群中去。
+
+![clustersh summary](https://user-images.githubusercontent.com/23725000/55681918-c8130b80-595e-11e9-8123-bfc554844551.png)
+
+
+# 参数介绍
+
+通过`cluster --help`参数即可查看所有的参数及其含义
+
+| 全称        | 简写    |  含义  | 默认值| 
+| --------   | -----   | ---- |---- |
+|  --username       | -U      |   用于登陆集群服务器的用户名    |root|
+| --password        | -P      |   用于登陆集群服务器的密码    | root|
+| --ips        | -I      |   用于指定集群ip配置文件    | ips|
+|--timeout|-T| 用于指定ssh连接的超时时间，格式为数字加单位，比如"10s"| 10s|
+|--verbose|-V|尽可能地打印信息,包括shell脚本在集群执行时的全部输出，执行命令时加上该标志（不需要参数）即表示开启|不开启|
+
+
+
 
 
 
