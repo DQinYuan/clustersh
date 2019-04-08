@@ -52,6 +52,7 @@ Download `clustersh` binary file from
 the PATH of Linux:
 
 ```bash
+chmod a+x clustersh
 mv clustersh /usr/local/bin
 ```
 
