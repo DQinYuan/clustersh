@@ -261,7 +261,9 @@ edit it as follows:
 ### Write shell script
 
 The main function of the script is to overwrite `/etc/hosts`
-with `unihosts`:
+with `unihosts`.
+
+`unihosts.sh`:
 
 ```bash
 #!/bin/sh
@@ -275,9 +277,7 @@ so we needn't to provide os specific scrips like last case.
 ### Execute clustersh
 
 ```bash
-#!/bin/sh
-
-\cp -f ./unihosts /etc/hosts
+clustersh unihosts -U root -P xxxxxx
 ```
 
 The task is relatively simple, so execution is very fast 
