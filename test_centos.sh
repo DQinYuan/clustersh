@@ -1,3 +1,3 @@
 #!/bin/sh
 
-echo hello > hellohello_centos
+echo hello > ~/hellohello_centos

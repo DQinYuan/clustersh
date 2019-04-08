@@ -156,14 +156,14 @@ func handleIp(ip string, remoteDir string, shName string, username string, passw
 	defer sshTool.RmDir(remoteDir, verbose)
 
 	//exec sh for spec os type
-	execShFile := filepath.Join(remoteDir, chooseFile(shName, ostype))
-	err = sshTool.Sh(execShFile, verbose)
+	cmd := fmt.Sprintf("cd %s && sh %s", remoteDir, chooseFile(shName, ostype))
+	err = sshTool.Exec(cmd, verbose)
 	if err != nil{
-		log.Printf("Warning: ip %s sh %s exec fail, %v", ip, execShFile, err)
+		log.Printf("Warning: ip %s, %q exec fail, %v", ip, cmd, err)
 		return
 	}
 
-	log.Printf("ip %s , sh %s ok", ip, execShFile)
+	log.Printf("ip %s , %q ok", ip, cmd)
 	count()
 }
 

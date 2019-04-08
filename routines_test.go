@@ -62,7 +62,7 @@ func TestChooseFile(t *testing.T) {
 }
 
 func TestExecSh(t *testing.T)  {
-	t.SkipNow()
+	//t.SkipNow()
 	ch <- "10.10.108.40"
 	close(ch)
 	wg := new(sync.WaitGroup)
