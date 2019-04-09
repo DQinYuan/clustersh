@@ -48,11 +48,12 @@ centos machines and ubuntu machines in the cluster.
 ### Download cluster sh
 
 Download `clustersh` binary file from
- [the download address](https://github.com/DQinYuan/clustersh/releases/download/v0.1.0/clustersh)
+the download address(use wget as follows)
  , and then move it to 
 the PATH of Linux:
 
 ```bash
+wget https://github.com/DQinYuan/clustersh/releases/download/v0.1.0/clustersh
 chmod a+x clustersh
 mv clustersh /usr/local/bin
 ```

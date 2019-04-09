@@ -33,10 +33,11 @@ ubuntu机器
 
 ### 下载clustersh
 
-去[下载地址](https://github.com/DQinYuan/clustersh/releases/download/v0.1.0/clustersh)下载clustersh的二进制文件，
+去下载地址下载clustersh的二进制文件(使用下面的wget命令)，
 然后将其移动到linux的PATH路径下：
 
 ```bash
+wget https://github.com/DQinYuan/clustersh/releases/download/v0.1.0/clustersh
 chmod a+x clustersh
 mv clustersh /usr/local/bin
 ```
