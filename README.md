@@ -306,6 +306,7 @@ You can get all available param and introduction by  `clustersh --help`
 | --ips        | -I      |   config file for machines' ip in cluster    | ips|
 |--timeout|-T| ssh connection timeout, for example "10s"| 10s|
 |--verbose|-V| print all shell output in cluster, perhaps can help you debug your shell. To open verbose, you only need to add this flag(needn't param) |Close|
+|--concurrent|-C| concurrent connections number|number of cpu cores|
 
 # Principle
 

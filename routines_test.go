@@ -19,13 +19,12 @@ func generateIp(ipFormat string, start int, end int) []string {
 
 
 func TestReadNodes(t *testing.T) {
-	t.SkipNow()
+	//t.SkipNow()
 
 	correctData := make([]string, 0)
 	correctData = append(correctData, "10.10.108.85")
 	correctData = append(correctData, generateIp(`10.10.108.%d`, 91, 93)...)
 	correctData = append(correctData, "10.10.108.23")
-
 
 	go readNodes("ips")
 	for _, data := range correctData  {
@@ -34,6 +33,15 @@ func TestReadNodes(t *testing.T) {
 		if ip != data{
 			t.Errorf("Expect:%s, Real: %s ", data, ip)
 		}
+	}
+}
+
+func TestPrintReadNodes(t *testing.T)  {
+	t.SkipNow()
+	go readNodes("ipstest")
+
+	for ip := range ch{
+		fmt.Println(ip)
 	}
 }
 

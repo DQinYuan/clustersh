@@ -26,6 +26,7 @@ func main() {
 	var timeout string;
 	var verbose bool;
 	var debug bool;
+	var concurrent int;
 
 	rootCmd := &cobra.Command{
 		Use: "clustersh shname",
@@ -38,6 +39,7 @@ func main() {
 				log.Printf("ips: %s\n", ipsfilePath)
 				log.Printf("timeout: %s\n", timeout)
 				log.Printf("verbose: %v\n", verbose)
+				log.Printf("concurrent num: %d\n", concurrent)
 			}
 
 			if debug{
@@ -63,7 +65,7 @@ func main() {
 			wg := new(sync.WaitGroup)
 			wg.Add(runtime.NumCPU())
 
-			for i := 0; i < runtime.NumCPU(); i++{
+			for i := 0; i < concurrent; i++{
 				go execSh(remoteDir, shName, username, password, timeout, verbose, wg)
 			}
 
@@ -80,6 +82,7 @@ func main() {
 	rootCmd.Flags().StringVarP(&timeout, "timeout", "T", "10s",  "ssh connect timeout for example:'--timeout 10s'")
 	rootCmd.Flags().BoolVarP(&verbose, "verbose", "V", false, "print all possible info, default false, can be opened with '--verbose'")
 	rootCmd.Flags().BoolVarP(&debug, "debug", "D", false, "start pprof for debug")
+	rootCmd.Flags().IntVarP(&concurrent, "concurrent", "C", runtime.NumCPU(), "concurrent num in ssh connection, default value is cpu core num")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(rootCmd.UsageString())

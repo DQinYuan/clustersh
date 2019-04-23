@@ -20,7 +20,7 @@ var ch = make(chan string, runtime.NumCPU())
 
 var (
 	// reg to recognize ip like 10.10.108.73
-	ipReg = regexp.MustCompile(`^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$`)
+	//ipReg = regexp.MustCompile(`^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$`)
 	// reg to recognize extended ip   like 10.10.108.33-40
 	extendedIpReg = regexp.MustCompile(`^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)-(2[0-4]\d|25[0-5]|[01]?\d\d?)$`)
 )
@@ -36,9 +36,6 @@ func readNodes(ipsPath string) {
 	for i, v := range ips {
 		trimed := strings.TrimSpace(v)
 		switch {
-		case ipReg.MatchString(trimed):
-			// normal ip
-			ch <- trimed
 		case extendedIpReg.MatchString(trimed):
 			// extended ip
 			point := strings.LastIndex(trimed, `.`)
@@ -63,6 +60,9 @@ func readNodes(ipsPath string) {
 			for ip := startNum; ip <= endNum; ip++{
 				ch <- fmt.Sprintf(ipFormat, ip)
 			}
+		default:
+			// normal ip or hostname
+			ch <- trimed
 		}
 	}
 
@@ -134,7 +134,8 @@ func execSh(remoteDir string, shName string, username string, password string, t
 	}
 }
 
-func handleIp(ip string, remoteDir string, shName string, username string, password string, timeout string, verbose bool)  {
+func handleIp(ip string, remoteDir string, shName string, username string, password string, timeout string,
+	verbose bool)  {
 
 	//create ssh connection
 	sshTool, err := sshtool.NewSshtool(ip, username, password, timeout)

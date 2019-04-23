@@ -267,7 +267,7 @@ clustersh unihosts -U root -P xxxxxx
 | --ips        | -I      |   用于指定集群ip配置文件    | ips|
 |--timeout|-T| 用于指定ssh连接的超时时间，格式为数字加单位，比如"10s"| 10s|
 |--verbose|-V|尽可能地打印信息,包括shell脚本在集群执行时的全部输出，执行命令时加上该标志（不需要参数）即表示开启|不开启|
-
+|--concurrent|-C|设置并发连接数|计算机的CPU核数|
 
 
 # 原理

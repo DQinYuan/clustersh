@@ -1,3 +1,3 @@
 #!/bin/sh
 
-echo hello > hellohello
+echo hello > ~/hellohello
