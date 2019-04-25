@@ -37,7 +37,7 @@ ubuntu机器
 然后将其移动到linux的PATH路径下：
 
 ```bash
-wget https://github.com/DQinYuan/clustersh/releases/download/v0.1.0/clustersh
+wget https://github.com/DQinYuan/clustersh/releases/download/v0.1.1/clustersh
 chmod a+x clustersh
 mv clustersh /usr/local/bin
 ```

@@ -53,7 +53,7 @@ the download address(use wget as follows)
 the PATH of Linux:
 
 ```bash
-wget https://github.com/DQinYuan/clustersh/releases/download/v0.1.0/clustersh
+wget https://github.com/DQinYuan/clustersh/releases/download/v0.1.1/clustersh
 chmod a+x clustersh
 mv clustersh /usr/local/bin
 ```
