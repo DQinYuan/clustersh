@@ -1,3 +1,3 @@
 #!/bin/sh
 
-echo hello > ~/hellohello_ubuntu
+echo $1 > ~/hellohello_ubuntu

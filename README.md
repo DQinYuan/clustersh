@@ -308,6 +308,7 @@ You can get all available param and introduction by  `clustersh --help`
 |--verbose|-V| print all shell output in cluster, perhaps can help you debug your shell. To open verbose, you only need to add this flag(needn't param) |Close|
 |--concurrent|-C| concurrent connections number|number of cpu cores|
 |--cmd|none|if you are to lazy to write a shell script, you can use it to execute a shell cmd in cluster, for example, `clustersh -U root -P xxx --cmd 'free -m' -V` to see memory status of all machines in cluster|none|
+|--param|none|pass params to your script, please wrap them with ''|none|
 
 # Principle
 

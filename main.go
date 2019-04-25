@@ -28,6 +28,7 @@ func main() {
 	var debug bool
 	var concurrent int
 	var command string
+	var params string
 
 	rootCmd := &cobra.Command{
 		Use: "it can be used in two ways: clustersh shname or clustersh --cmd 'a shell command'",
@@ -68,7 +69,6 @@ func main() {
 				os.Exit(1)
 			}
 
-
 			go readNodes(ipsfilePath)
 
 			wg := new(sync.WaitGroup)
@@ -83,7 +83,7 @@ func main() {
 				shName = args[0]
 				uuid := uuid.NewV4().String()
 				remoteDir = fmt.Sprintf("~/%s", uuid)
-				handler = shHandler(remoteDir, shName, verbose)
+				handler = shHandler(remoteDir, shName, params, verbose)
 			} else {
 				handler = cmdHandler(command, verbose)
 			}
@@ -107,6 +107,7 @@ func main() {
 	rootCmd.Flags().BoolVarP(&debug, "debug", "D", false, "start pprof for debug")
 	rootCmd.Flags().IntVarP(&concurrent, "concurrent", "C", runtime.NumCPU(), "concurrent num in ssh connection, default value is cpu core num")
 	rootCmd.Flags().StringVar(&command, "cmd", "", "a cmd you want to execute in cluster")
+	rootCmd.Flags().StringVar(&params, "param", "", "pass params to your script, please wrap them with ''")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(rootCmd.UsageString())

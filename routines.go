@@ -154,7 +154,7 @@ func handleIp(ip, username, password, timeout string, handler func(*sshtool.Ssht
 }
 
 
-func shHandler(remoteDir string, shName string, verbose bool) func(*sshtool.Sshtool) error  {
+func shHandler(remoteDir string, shName, params string, verbose bool) func(*sshtool.Sshtool) error  {
 
 	return func(st *sshtool.Sshtool) error {
 		//judge os type
@@ -168,7 +168,7 @@ func shHandler(remoteDir string, shName string, verbose bool) func(*sshtool.Ssht
 		defer st.RmDir(remoteDir, verbose)
 
 		//exec sh for spec os type
-		cmd := fmt.Sprintf("cd %s && sh %s", remoteDir, chooseFile(shName, ostype))
+		cmd := fmt.Sprintf("cd %s && sh %s %s", remoteDir, chooseFile(shName, ostype), params)
 		err = st.Exec(cmd, verbose)
 		if err != nil{
 			return fmt.Errorf("Warning: %q exec fail, %v \n", cmd, err)

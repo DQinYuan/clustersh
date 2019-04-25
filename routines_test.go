@@ -75,7 +75,7 @@ func TestShHandler(t *testing.T)  {
 	close(ch)
 	wg := new(sync.WaitGroup)
 	wg.Add(1)
-	clusterExec(shHandler("~/NNNNNYYY", "test", true),
+	clusterExec(shHandler("~/NNNNNYYY", "test", "lalalal", true),
 		"root", "vt1111", "5s", wg)
 	fmt.Println(counter)
 }
