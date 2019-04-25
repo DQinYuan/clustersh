@@ -268,6 +268,7 @@ clustersh unihosts -U root -P xxxxxx
 |--timeout|-T| 用于指定ssh连接的超时时间，格式为数字加单位，比如"10s"| 10s|
 |--verbose|-V|尽可能地打印信息,包括shell脚本在集群执行时的全部输出，执行命令时加上该标志（不需要参数）即表示开启|不开启|
 |--concurrent|-C|设置并发连接数|计算机的CPU核数|
+|--cmd|无|如果你懒得写shell脚本,也可以直接用这个参数在集群上执行一条命令,举个例子`clustersh -U root -P xxx --cmd 'free -m' -V`,来查看集群所有机器的内存状况|无|
 
 
 # 原理

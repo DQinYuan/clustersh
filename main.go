@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/DQinYuan/clustersh/sshtool"
 	"github.com/satori/go.uuid"
 	"github.com/spf13/cobra"
 	"log"
@@ -13,25 +14,24 @@ import (
 )
 
 
-
 /*
 clustersh example.sh --username=xxx --password=xxx
 
 there also should be a `nodes` file in the same directory, in which is node ip in clusters
 */
 func main() {
-	var username string;
-	var password string;
-	var ipsfilePath string;
-	var timeout string;
-	var verbose bool;
-	var debug bool;
-	var concurrent int;
+	var username string
+	var password string
+	var ipsfilePath string
+	var timeout string
+	var verbose bool
+	var debug bool
+	var concurrent int
+	var command string
 
 	rootCmd := &cobra.Command{
-		Use: "clustersh shname",
+		Use: "it can be used in two ways: clustersh shname or clustersh --cmd 'a shell command'",
 		Short: "'clustersh shname', can run your sh in a cluster, without need to install anything in the cluster",
-		Args:cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			if verbose{
 				log.Printf("username: %s\n", username)
@@ -40,6 +40,7 @@ func main() {
 				log.Printf("timeout: %s\n", timeout)
 				log.Printf("verbose: %v\n", verbose)
 				log.Printf("concurrent num: %d\n", concurrent)
+				log.Printf("cmd: %s", command)
 			}
 
 			if debug{
@@ -55,18 +56,40 @@ func main() {
 				}()
 			}
 
-			shName := args[0]
+			// auth params
+			if len(args) < 1 && command == ""{
+				fmt.Println("you must give a shname or a cmd")
+				fmt.Println(cmd.UsageString())
+				os.Exit(1)
+			}
+			if len(args) >= 1 && command != ""{
+				fmt.Println("can not give shname and cmd at the same time")
+				fmt.Println(cmd.UsageString())
+				os.Exit(1)
+			}
 
-			uuid := uuid.NewV4().String()
-			remoteDir := fmt.Sprintf("~/%s", uuid)
 
 			go readNodes(ipsfilePath)
 
 			wg := new(sync.WaitGroup)
-			wg.Add(runtime.NumCPU())
+			wg.Add(concurrent)
+
+			isSh := command == ""
+
+			var shName string
+			var remoteDir string
+			var handler func(*sshtool.Sshtool) error
+			if isSh{
+				shName = args[0]
+				uuid := uuid.NewV4().String()
+				remoteDir = fmt.Sprintf("~/%s", uuid)
+				handler = shHandler(remoteDir, shName, verbose)
+			} else {
+				handler = cmdHandler(command, verbose)
+			}
 
 			for i := 0; i < concurrent; i++{
-				go execSh(remoteDir, shName, username, password, timeout, verbose, wg)
+				go clusterExec(handler, username, password, timeout, wg)
 			}
 
 			wg.Wait()
@@ -83,6 +106,7 @@ func main() {
 	rootCmd.Flags().BoolVarP(&verbose, "verbose", "V", false, "print all possible info, default false, can be opened with '--verbose'")
 	rootCmd.Flags().BoolVarP(&debug, "debug", "D", false, "start pprof for debug")
 	rootCmd.Flags().IntVarP(&concurrent, "concurrent", "C", runtime.NumCPU(), "concurrent num in ssh connection, default value is cpu core num")
+	rootCmd.Flags().StringVar(&command, "cmd", "", "a cmd you want to execute in cluster")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(rootCmd.UsageString())

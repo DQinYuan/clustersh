@@ -124,19 +124,18 @@ func chooseFile(shName string, osType string) string {
 	return fmt.Sprintf("%s.sh", shName)
 }
 
-func execSh(remoteDir string, shName string, username string, password string, timeout string, verbose bool, wg *sync.WaitGroup) {
-
+// responsible for ssh connection open and close, counter and WaitGroup
+func clusterExec(handler func(*sshtool.Sshtool) error, username, password, timeout string, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	for ip := range ch{
 		log.Printf("start handling ip %s", ip)
-		handleIp(ip, remoteDir, shName, username, password, timeout, verbose)
+		handleIp(ip, username, password, timeout, handler)
 	}
 }
 
-func handleIp(ip string, remoteDir string, shName string, username string, password string, timeout string,
-	verbose bool)  {
-
+// responsible for ssh connection open and close, counter
+func handleIp(ip, username, password, timeout string, handler func(*sshtool.Sshtool) error) {
 	//create ssh connection
 	sshTool, err := sshtool.NewSshtool(ip, username, password, timeout)
 	if err != nil{
@@ -145,27 +144,50 @@ func handleIp(ip string, remoteDir string, shName string, username string, passw
 	}
 	defer sshTool.Close()
 
-	//judge os type
-	ostype, err := sshTool.OsType(verbose)
+	err = handler(sshTool)
 	if err != nil{
-		log.Printf("Warning: ip %s os query error, err: %v\n", ip, err)
+		log.Printf("ip %s fail, Warning: %v", ip, err)
 		return
 	}
-
-	//send files in current directory and subdirectory
-	tranAllFiles(sshTool, remoteDir, verbose)
-	defer sshTool.RmDir(remoteDir, verbose)
-
-	//exec sh for spec os type
-	cmd := fmt.Sprintf("cd %s && sh %s", remoteDir, chooseFile(shName, ostype))
-	err = sshTool.Exec(cmd, verbose)
-	if err != nil{
-		log.Printf("Warning: ip %s, %q exec fail, %v", ip, cmd, err)
-		return
-	}
-
-	log.Printf("ip %s , %q ok", ip, cmd)
+	log.Printf("ip %s ok", ip)
 	count()
+}
+
+
+func shHandler(remoteDir string, shName string, verbose bool) func(*sshtool.Sshtool) error  {
+
+	return func(st *sshtool.Sshtool) error {
+		//judge os type
+		ostype, err := st.OsType(verbose)
+		if err != nil{
+			return fmt.Errorf("Warning: os query error, err: %v\n", err)
+		}
+
+		//send files in current directory and subdirectory
+		tranAllFiles(st, remoteDir, verbose)
+		defer st.RmDir(remoteDir, verbose)
+
+		//exec sh for spec os type
+		cmd := fmt.Sprintf("cd %s && sh %s", remoteDir, chooseFile(shName, ostype))
+		err = st.Exec(cmd, verbose)
+		if err != nil{
+			return fmt.Errorf("Warning: %q exec fail, %v \n", cmd, err)
+		}
+
+		log.Printf("%q ok\n", cmd)
+		return nil
+	}
+}
+
+func cmdHandler(cmd string, verbose bool) func(*sshtool.Sshtool) error {
+	return func(st *sshtool.Sshtool) error {
+		err := st.Exec(cmd, verbose)
+		if err != nil{
+			return fmt.Errorf("Warnning: %q exec fail %v", cmd, err)
+		}
+
+		return nil
+	}
 }
 
 

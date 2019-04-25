@@ -69,13 +69,25 @@ func TestChooseFile(t *testing.T) {
 	}
 }
 
-func TestExecSh(t *testing.T)  {
+func TestShHandler(t *testing.T)  {
 	t.SkipNow()
 	ch <- "10.10.108.40"
 	close(ch)
 	wg := new(sync.WaitGroup)
 	wg.Add(1)
-	execSh("~/NNNNNYYY", "test", "root", "vt1111", "5s", true, wg)
+	clusterExec(shHandler("~/NNNNNYYY", "test", true),
+		"root", "vt1111", "5s", wg)
+	fmt.Println(counter)
+}
+
+func TestCmdHandler(t *testing.T) {
+	t.SkipNow()
+	ch <- "10.10.108.40"
+	close(ch)
+	wg := new(sync.WaitGroup)
+	wg.Add(1)
+	clusterExec(cmdHandler("df -h", true),
+		"root", "vt1111", "5s", wg)
 	fmt.Println(counter)
 }
 
